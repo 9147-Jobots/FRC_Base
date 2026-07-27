@@ -37,4 +37,12 @@ public interface IMotorBase {
      * @return the voltage supplied to the motor in volts
      */
     public double getVoltage();
+
+    /**
+     * Updates the motion profile constraints at runtime without redeploying code.
+     * @param maxVelocity maximum cruise velocity for the motion profile
+     * @param maxAcceleration maximum acceleration for the motion profile
+     * @param allowedProfileError allowed error for the motion profile (SparkMax/MAXMotion only; ignored by TalonFX)
+     */
+    public void updateMotionConstraints(double maxVelocity, double maxAcceleration, double allowedProfileError);
 }

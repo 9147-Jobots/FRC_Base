@@ -21,7 +21,7 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
 
     private final SparkClosedLoopController pid;
 
-    private final double DEFAULT_TOLERANCE = 0.05; // Default tolerance for isAtTarget, can be overridden by isAtTarget(double tolerance)
+    private static final double DEFAULT_TOLERANCE = 0.05; // Default tolerance for isAtTarget, can be overridden by isAtTarget(double tolerance)
 
     /**
      * Creates a new PositionControlMotorSparkMax with constants P, S, V and A.
@@ -302,8 +302,10 @@ public class SparkMaxPositionControl extends SparkMaxBase implements IMotorPosit
     }
 
     @Override
-    public void stop() {
-        // do noting for now
-        // controller.stopMotor();
-    }    
+    public void updateGains(double kP, double kI, double kD, double kS, double kV, double kA, double kG, double kCos) {
+        SparkMaxConfig update = new SparkMaxConfig();
+        update.closedLoop.p(kP).i(kI).d(kD).feedForward.kS(kS).kV(kV).kA(kA).kG(kG).kCos(kCos);
+        sparkMax.configure(update, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
 }

@@ -30,7 +30,6 @@ import frc.robot.services.DriveModesConstants;
 
 public class DriveCommand {
   private DriveCommand() {}
-
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).
    */

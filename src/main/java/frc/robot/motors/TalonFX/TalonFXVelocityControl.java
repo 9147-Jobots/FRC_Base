@@ -1,6 +1,7 @@
 package frc.robot.motors.TalonFX;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -10,6 +11,8 @@ import frc.robot.motors.IMotorVelocityControl;
 public class TalonFXVelocityControl extends TalonFXBase implements IMotorVelocityControl {
 
     private final TalonFXConfiguration configs;
+    private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
+    private final NeutralOut neutralRequest = new NeutralOut();
 
     private final static double DEFAULT_TOLERANCE = 0.05;
 
@@ -122,12 +125,12 @@ public class TalonFXVelocityControl extends TalonFXBase implements IMotorVelocit
 
     @Override
     public void runVelocity(double setpoint) {
-        talonFX.setControl(new VelocityVoltage(setpoint));
+        talonFX.setControl(velocityRequest.withVelocity(setpoint).withFeedForward(0));
     }
 
     @Override
     public void runVelocity(double speedSetpoint, double ffVolts) {
-        talonFX.setControl(new VelocityVoltage(speedSetpoint));
+        talonFX.setControl(velocityRequest.withVelocity(speedSetpoint).withFeedForward(ffVolts));
     }
 
     @Override
@@ -147,7 +150,18 @@ public class TalonFXVelocityControl extends TalonFXBase implements IMotorVelocit
 
     @Override
     public void stop() {
-        talonFX.setControl(new VelocityVoltage(0));
+        talonFX.setControl(neutralRequest);
     }
-    
+
+    @Override
+    public void updateGains(double kP, double kI, double kD, double kS, double kV, double kA) {
+        configs.Slot0.kP = kP;
+        configs.Slot0.kI = kI;
+        configs.Slot0.kD = kD;
+        configs.Slot0.kS = kS;
+        configs.Slot0.kV = kV;
+        configs.Slot0.kA = kA;
+        talonFX.getConfigurator().apply(configs.Slot0);
+    }
+
 }

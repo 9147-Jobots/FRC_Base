@@ -2,7 +2,6 @@ package frc.robot.motors.TalonFX;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -12,6 +11,7 @@ import frc.robot.motors.IMotorPositionControl;
 public class TalonFXPositionControl extends TalonFXBase implements IMotorPositionControl {
 
     private final TalonFXConfiguration configs;
+    private final PositionVoltage positionRequest = new PositionVoltage(0);
 
     private final static double DEFAULT_TOLERANCE = 0.05;
 
@@ -167,7 +167,7 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
 
     @Override
     public void runPosition(double setpoint) {
-        talonFX.setControl(new PositionVoltage(setpoint));
+        talonFX.setControl(positionRequest.withPosition(setpoint));
     }
 
     @Override
@@ -191,7 +191,16 @@ public class TalonFXPositionControl extends TalonFXBase implements IMotorPositio
     }
 
     @Override
-    public void stop() {
-        talonFX.setControl(new VelocityVoltage(0));
-    }    
+    public void updateGains(double kP, double kI, double kD, double kS, double kV, double kA, double kG, double kCos) {
+        configs.Slot0.kP = kP;
+        configs.Slot0.kI = kI;
+        configs.Slot0.kD = kD;
+        configs.Slot0.kS = kS;
+        configs.Slot0.kV = kV;
+        configs.Slot0.kA = kA;
+        // kG and kCos share the same Slot0.kG field — apply the one matching the gravity type set at construction
+        configs.Slot0.kG = (configs.Slot0.GravityType == GravityTypeValue.Elevator_Static) ? kG : kCos;
+        talonFX.getConfigurator().apply(configs.Slot0);
+    }
+
 }

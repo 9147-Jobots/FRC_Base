@@ -1,5 +1,6 @@
 package frc.robot.motors.TalonFX;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.motors.IMotorBase;
@@ -30,5 +31,13 @@ public abstract class TalonFXBase implements IMotorBase {
     @Override
     public void runVoltage(double voltage) {
         talonFX.setVoltage(voltage);
-    } 
+    }
+
+    @Override
+    public void updateMotionConstraints(double maxVelocity, double maxAcceleration, double allowedProfileError) {
+        MotionMagicConfigs mm = new MotionMagicConfigs();
+        mm.MotionMagicCruiseVelocity = maxVelocity;
+        mm.MotionMagicAcceleration = maxAcceleration;
+        talonFX.getConfigurator().apply(mm);
+    }
 }

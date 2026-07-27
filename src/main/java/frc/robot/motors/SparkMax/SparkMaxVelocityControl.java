@@ -22,7 +22,7 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
 
     private final SparkClosedLoopController pid;
 
-    private final double DEFAULT_TOLERANCE = 0.05;
+    private static final double DEFAULT_TOLERANCE = 0.05;
 
     /**
      * Creates a new Spark Max velocity controller with constants P, S, V and A.
@@ -189,6 +189,14 @@ public class SparkMaxVelocityControl extends SparkMaxBase implements IMotorVeloc
 
     @Override
     public void stop() {
-        pid.setSetpoint(0, ControlType.kMAXMotionVelocityControl);
+        sparkMax.stopMotor();
     }
+
+    @Override
+    public void updateGains(double kP, double kI, double kD, double kS, double kV, double kA) {
+        SparkMaxConfig update = new SparkMaxConfig();
+        update.closedLoop.p(kP).i(kI).d(kD).feedForward.kS(kS).kV(kV).kA(kA);
+        sparkMax.configure(update, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
 }

@@ -1,8 +1,11 @@
 package frc.robot.motors.SparkMax;
 
-import frc.robot.motors.IMotorBase;
-
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import frc.robot.motors.IMotorBase;
 
 public abstract class SparkMaxBase implements IMotorBase {
 
@@ -33,5 +36,12 @@ public abstract class SparkMaxBase implements IMotorBase {
     @Override
     public void runVoltage(double voltage) {
         sparkMax.setVoltage(voltage);
+    }
+
+    @Override
+    public void updateMotionConstraints(double maxVelocity, double maxAcceleration, double allowedProfileError) {
+        SparkMaxConfig update = new SparkMaxConfig();
+        update.closedLoop.maxMotion.cruiseVelocity(maxVelocity).maxAcceleration(maxAcceleration).allowedProfileError(allowedProfileError);
+        sparkMax.configure(update, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 }
