@@ -45,4 +45,17 @@ public interface IMotorBase {
      * @param allowedProfileError allowed error for the motion profile (SparkMax/MAXMotion only; ignored by TalonFX)
      */
     public void updateMotionConstraints(double maxVelocity, double maxAcceleration, double allowedProfileError);
+
+    /**
+     * Sets the idle mode of the motor.
+     * @param brake true for brake mode, false for coast mode
+     */
+    public void setIdleMode(boolean brake);
+
+    /**
+     * Sets the peak output range of the closed-loop controller.
+     * @param minOutput minimum output (-1.0 to 0.0)
+     * @param maxOutput maximum output (0.0 to 1.0)
+     */
+    public void setOutputRange(double minOutput, double maxOutput);
 }

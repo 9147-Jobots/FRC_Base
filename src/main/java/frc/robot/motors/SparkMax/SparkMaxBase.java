@@ -3,6 +3,7 @@ package frc.robot.motors.SparkMax;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.motors.IMotorBase;
@@ -44,4 +45,19 @@ public abstract class SparkMaxBase implements IMotorBase {
         update.closedLoop.maxMotion.cruiseVelocity(maxVelocity).maxAcceleration(maxAcceleration).allowedProfileError(allowedProfileError);
         sparkMax.configure(update, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
+
+    @Override
+    public void setIdleMode(boolean brake) {
+        SparkMaxConfig update = new SparkMaxConfig();
+        update.idleMode(brake ? IdleMode.kBrake : IdleMode.kCoast);
+        sparkMax.configure(update, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
+
+    @Override
+    public void setOutputRange(double minOutput, double maxOutput) {
+        SparkMaxConfig update = new SparkMaxConfig();
+        update.closedLoop.outputRange(minOutput, maxOutput);
+        sparkMax.configure(update, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
 }
+
